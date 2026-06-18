@@ -44,7 +44,7 @@ export default function MessageBubble({ message, isOwn }: MessageBubbleProps): R
               className="max-h-80 max-w-full rounded-xl object-cover"
             />
           ) : (
-            <p className="text-sm break-words whitespace-pre-wrap">{message.content}</p>
+            <p className="text-sm wrap-break-word whitespace-pre-wrap">{message.content}</p>
           )}
         </div>
 

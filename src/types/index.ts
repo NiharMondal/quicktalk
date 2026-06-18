@@ -34,7 +34,7 @@ export interface Notification {
   type: string;
   roomId: string;
   messageId: string;
-  sender: User;
+  sender: string; // sender's userId — backend sends only the ID, not a populated User
   preview: string;
   createdAt: string;
 }

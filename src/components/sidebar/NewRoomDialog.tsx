@@ -81,7 +81,7 @@ export default function NewRoomDialog(): React.ReactElement {
       });
       upsertRoom(data);
       setActiveRoomId(data._id);
-      router.push(`/${data._id}`);
+      router.replace(`/${data._id}`);
       handleOpenChange(false);
     } catch (err) {
       const message =

@@ -38,7 +38,7 @@ export default function UserList(): React.ReactElement {
       const { data } = await api.post<Room>("/rooms/direct", { userId: targetUser._id });
       upsertRoom(data);
       setActiveRoomId(data._id);
-      router.push(`/${data._id}`);
+      router.replace(`/${data._id}`);
     } catch (err) {
       const message = isAxiosError(err) ? (err.response?.data as { message?: string })?.message ?? err.message : "Failed to open chat";
       toast.error(message);

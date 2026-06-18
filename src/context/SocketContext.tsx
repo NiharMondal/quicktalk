@@ -1,9 +1,12 @@
 "use client";
 
 import { createContext, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import { getSocket, disconnectSocket, type AppSocket } from "@/lib/socket";
 import { useAuth } from "@/hooks/useAuth";
 import { useChatStore } from "@/store/chatStore";
+import { api } from "@/lib/api";
 import type { Notification } from "@/types";
 
 /**
@@ -27,10 +30,12 @@ export function SocketProvider({ children }: SocketProviderProps): React.ReactEl
   const { user } = useAuth();
   const socket = getSocket();
   const [isConnected, setIsConnected] = useState(false);
+  const router = useRouter();
 
   const setUserOnline = useChatStore((s) => s.setUserOnline);
   const setUserOffline = useChatStore((s) => s.setUserOffline);
   const incrementUnread = useChatStore((s) => s.incrementUnread);
+  const setUnreadCounts = useChatStore((s) => s.setUnreadCounts);
 
   // Connect when authenticated; tear the singleton down on logout / session end.
   useEffect(() => {
@@ -40,6 +45,19 @@ export function SocketProvider({ children }: SocketProviderProps): React.ReactEl
       disconnectSocket();
     };
   }, [user, socket]);
+
+  // Hydrate per-room unread counts from the REST endpoint on login/refresh.
+  useEffect(() => {
+    if (!user) return;
+
+    async function fetchUnread(): Promise<void> {
+      const { data } = await api.get<Array<{ roomId: string; unreadCount: number }>>("/notifications/unread");
+      const counts = Object.fromEntries(data.map((item) => [item.roomId, item.unreadCount]));
+      setUnreadCounts(counts);
+    }
+
+    void fetchUnread();
+  }, [user, setUnreadCounts]);
 
   // Track connection status for consumers (e.g. a "reconnecting" banner).
   useEffect(() => {
@@ -58,10 +76,15 @@ export function SocketProvider({ children }: SocketProviderProps): React.ReactEl
     const onUserOnline = (data: { userId: string }): void => setUserOnline(data.userId);
     const onUserOffline = (data: { userId: string }): void => setUserOffline(data.userId);
     const onNotification = (data: Notification): void => {
-      // Don't bump unread for the room the user is already looking at.
-      if (useChatStore.getState().activeRoomId !== data.roomId) {
-        incrementUnread(data.roomId);
-      }
+      if (useChatStore.getState().activeRoomId === data.roomId) return;
+      incrementUnread(data.roomId);
+      toast("New message", {
+        description: data.preview,
+        action: {
+          label: "View",
+          onClick: () => router.push(`/${data.roomId}`),
+        },
+      });
     };
 
     socket.on("user_online", onUserOnline);
@@ -72,7 +95,7 @@ export function SocketProvider({ children }: SocketProviderProps): React.ReactEl
       socket.off("user_offline", onUserOffline);
       socket.off("notification", onNotification);
     };
-  }, [socket, setUserOnline, setUserOffline, incrementUnread]);
+  }, [socket, setUserOnline, setUserOffline, incrementUnread, router]);
 
   return (
     <SocketContext.Provider value={{ socket, isConnected }}>

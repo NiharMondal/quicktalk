@@ -49,7 +49,7 @@ export function useUserSearch(query: string): UseUserSearchResult {
       abortRef.current = controller;
 
       api
-        .get<User[]>("/users", { params: { search: trimmed }, signal: controller.signal })
+        .get<User[]>("/users/search", { params: { search: trimmed }, signal: controller.signal })
         .then(({ data }) => {
           setUsers(data);
           setError(null);

@@ -19,6 +19,7 @@ interface ChatStore {
 
   // Unread counts: roomId → count
   unreadCounts: Record<string, number>;
+  setUnreadCounts: (counts: Record<string, number>) => void;
   incrementUnread: (roomId: string) => void;
   clearUnread: (roomId: string) => void;
 
@@ -46,6 +47,7 @@ export const useChatStore = create<ChatStore>((set) => ({
   setActiveRoomId: (id) => set({ activeRoomId: id }),
 
   unreadCounts: {},
+  setUnreadCounts: (counts) => set({ unreadCounts: counts }),
   incrementUnread: (roomId) =>
     set((state) => ({
       unreadCounts: {

@@ -42,7 +42,7 @@ export default function JoinRoomDialog(): React.ReactElement {
       const { data } = await api.post<Room>(`/rooms/${id}/join`);
       upsertRoom(data);
       setActiveRoomId(data._id);
-      router.push(`/${data._id}`);
+      router.replace(`/${data._id}`);
       handleOpenChange(false);
     } catch (err) {
       const message = isAxiosError(err)

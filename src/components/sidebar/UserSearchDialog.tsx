@@ -32,7 +32,6 @@ export default function UserSearchDialog(): React.ReactElement {
   const [messagingUserId, setMessagingUserId] = useState<string | null>(null);
 
   const { users, isLoading, error } = useUserSearch(query);
-  console.log(users)
 
   const trimmed = query.trim();
   const isIdle = trimmed.length < USER_SEARCH_MIN_LEN;
@@ -51,7 +50,7 @@ export default function UserSearchDialog(): React.ReactElement {
       const { data } = await api.post<Room>("/rooms/direct", { userId });
       upsertRoom(data);
       setActiveRoomId(data._id);
-      router.push(`/${data._id}`);
+      router.replace(`/${data._id}`);
       handleOpenChange(false);
     } catch (err) {
       const msg = isAxiosError(err)
