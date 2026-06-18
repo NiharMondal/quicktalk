@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { LogInIcon } from "lucide-react";
+import { CirclePlus } from "lucide-react";
 import { toast } from "sonner";
 import { isAxiosError } from "axios";
 import { api } from "@/lib/api";
@@ -58,7 +58,7 @@ export default function JoinRoomDialog(): React.ReactElement {
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button variant="ghost" size="icon" className="size-6 shrink-0" aria-label="Join a room">
-          <LogInIcon className="size-3.5" />
+          <CirclePlus className="size-3.5" />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-sm">
