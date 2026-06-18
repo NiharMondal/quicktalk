@@ -7,6 +7,7 @@ import RoomList from "@/components/sidebar/RoomList";
 import UserList from "@/components/sidebar/UserList";
 import NewRoomDialog from "@/components/sidebar/NewRoomDialog";
 import JoinRoomDialog from "@/components/sidebar/JoinRoomDialog";
+import UserSearchDialog from "@/components/sidebar/UserSearchDialog";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -22,6 +23,7 @@ export default function Sidebar(): React.ReactElement {
           <p className="truncate text-sm font-semibold">{user?.username ?? "…"}</p>
           {user?.email ? <p className="text-muted-foreground truncate text-xs">{user.email}</p> : null}
         </div>
+        <UserSearchDialog />
         <Button variant="ghost" size="icon" aria-label="Log out" onClick={() => void logout()}>
           <LogOutIcon className="size-4" />
         </Button>
