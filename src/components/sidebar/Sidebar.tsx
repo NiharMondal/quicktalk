@@ -5,6 +5,8 @@ import { useAuth } from "@/hooks/useAuth";
 import Avatar from "@/components/shared/Avatar";
 import RoomList from "@/components/sidebar/RoomList";
 import UserList from "@/components/sidebar/UserList";
+import NewRoomDialog from "@/components/sidebar/NewRoomDialog";
+import JoinRoomDialog from "@/components/sidebar/JoinRoomDialog";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -29,9 +31,15 @@ export default function Sidebar(): React.ReactElement {
 
       <ScrollArea className="flex-1">
         <nav className="py-3">
-          <h2 className="text-muted-foreground px-4 pb-2 text-xs font-semibold tracking-wide uppercase">
-            Rooms
-          </h2>
+          <div className="flex items-center px-4 pb-2">
+            <h2 className="text-muted-foreground flex-1 text-xs font-semibold tracking-wide uppercase">
+              Rooms
+            </h2>
+            <div className="flex items-center gap-1">
+              <JoinRoomDialog />
+              <NewRoomDialog />
+            </div>
+          </div>
           <RoomList />
 
           <Separator className="my-3" />
