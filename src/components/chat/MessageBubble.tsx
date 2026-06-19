@@ -1,17 +1,18 @@
 import Avatar from "@/components/shared/Avatar";
 import { cn } from "@/lib/utils";
-import type { Message } from "@/types";
+import type { Message, TRoomType } from "@/types";
 
 interface MessageBubbleProps {
   message: Message;
   isOwn: boolean;
+  roomType: TRoomType | undefined;
 }
 
 function formatTime(iso: string): string {
   return new Date(iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
 
-export default function MessageBubble({ message, isOwn }: MessageBubbleProps): React.ReactElement {
+export default function MessageBubble({ message, isOwn, roomType }: MessageBubbleProps): React.ReactElement {
   return (
     <div className={cn("flex items-end gap-2", isOwn && "flex-row-reverse")}>
       {!isOwn ? (
@@ -19,7 +20,7 @@ export default function MessageBubble({ message, isOwn }: MessageBubbleProps): R
       ) : null}
 
       <div className={cn("flex max-w-[75%] flex-col gap-1", isOwn ? "items-end" : "items-start")}>
-        {!isOwn ? (
+        {!isOwn && roomType==="group" ? (
           <span className="text-muted-foreground px-1 text-xs font-medium">
             {message.sender.username}
           </span>
