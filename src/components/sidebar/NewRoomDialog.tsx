@@ -21,6 +21,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type { Room, User } from "@/types";
+import { cn } from "@/lib/utils";
 
 export default function NewRoomDialog(): React.ReactElement {
   const router = useRouter();
@@ -137,11 +138,7 @@ export default function NewRoomDialog(): React.ReactElement {
                         <button
                           type="button"
                           onClick={() => toggleUser(u._id)}
-                          className={`flex w-full items-center gap-3 rounded px-2 py-1.5 text-sm transition-colors ${
-                            selected
-                              ? "bg-accent text-accent-foreground"
-                              : "hover:bg-accent/50"
-                          }`}
+                          className={cn("flex w-full items-center gap-3 rounded px-2 py-1.5 text-sm transition-colors hover:bg-accent/50", {"bg-accent text-accent-foreground": selected})}
                         >
                           <Avatar
                             name={u.username}

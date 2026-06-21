@@ -104,6 +104,8 @@ export default function ChatWindow({ roomId }: ChatWindowProps): React.ReactElem
   const other = room?.type === "direct" ? room.members.find((m) => m._id !== user?._id) : undefined;
   const title = other?.username ?? room?.name ?? "Conversation";
 
+  const roomType = room?.type;
+
   return (
     <div className="flex h-full min-h-0 flex-1 flex-col">
       <header className="flex items-center gap-3 border-b p-3">
@@ -118,7 +120,7 @@ export default function ChatWindow({ roomId }: ChatWindowProps): React.ReactElem
                 className="ml-auto shrink-0"
                 aria-label="Copy invite link"
                 onClick={() => {
-                  void navigator.clipboard.writeText(window.location.href).then(() => {
+                  void navigator.clipboard.writeText(roomId).then(() => {
                     toast.success("Invite link copied!");
                   });
                 }}
@@ -153,7 +155,7 @@ export default function ChatWindow({ roomId }: ChatWindowProps): React.ReactElem
               </div>
             ) : null}
             {messages.map((message) => (
-              <MessageBubble key={message._id} message={message} isOwn={message.sender._id === user?._id} />
+              <MessageBubble key={message._id} message={message} isOwn={message.sender._id === user?._id} roomType={roomType} />
             ))}
           </div>
         )}
