@@ -4,12 +4,13 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { useRooms } from "@/hooks/useRooms";
+import Sidebar from "@/components/sidebar/Sidebar";
 import Loader from "@/components/shared/Loader";
 import { Button } from "@/components/ui/button";
 
 export default function RootPage(): React.ReactElement {
   const router = useRouter();
-  const { user, isLoading: authLoading, logout } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
   const { rooms, isLoading: roomsLoading, error, refetch } = useRooms();
 
   // Once auth resolves: anonymous → /login; authenticated → first room.
@@ -24,27 +25,30 @@ export default function RootPage(): React.ReactElement {
     }
   }, [authLoading, user, roomsLoading, error, rooms, router]);
 
-  // Authenticated, rooms loaded, but the user has no conversations.
+  // Authenticated, rooms loaded, but the user has no conversations yet.
   if (!authLoading && user && !roomsLoading && !error && rooms.length === 0) {
     return (
-      <main className="flex min-h-screen flex-col items-center justify-center gap-3 p-4 text-center">
-        <p className="text-muted-foreground text-sm">You have no conversations yet.</p>
-        <Button variant="outline" size="sm" onClick={() => void logout()}>
-          Log out
-        </Button>
-      </main>
+      <div className="flex h-screen overflow-hidden">
+        <Sidebar />
+        <main className="flex min-w-0 flex-1 flex-col items-center justify-center">
+          <p className="text-muted-foreground text-sm">No conversations yet.</p>
+        </main>
+      </div>
     );
   }
 
-  // Failed to load rooms.
+  // Failed to load rooms — show sidebar so layout stays consistent.
   if (!authLoading && user && error) {
     return (
-      <main className="flex min-h-screen flex-col items-center justify-center gap-3 p-4 text-center">
-        <p className="text-muted-foreground text-sm">{error}</p>
-        <Button variant="outline" size="sm" onClick={refetch}>
-          Retry
-        </Button>
-      </main>
+      <div className="flex h-screen overflow-hidden">
+        <Sidebar />
+        <main className="flex min-w-0 flex-1 flex-col items-center justify-center gap-3">
+          <p className="text-muted-foreground text-sm">{error}</p>
+          <Button variant="outline" size="sm" onClick={refetch}>
+            Retry
+          </Button>
+        </main>
+      </div>
     );
   }
 

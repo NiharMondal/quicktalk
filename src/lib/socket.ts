@@ -1,5 +1,6 @@
 import { io, type Socket } from "socket.io-client";
 import type { Message, Notification } from "@/types";
+import { getAuthToken } from "@/lib/api";
 
 /**
  * Socket.io event contracts — backend owns these. Never emit or listen for an
@@ -44,9 +45,15 @@ let socket: AppSocket | null = null;
  */
 export function getSocket(): AppSocket {
   if (!socket) {
-    socket = io(process.env.NEXT_PUBLIC_SOCKET_URL ?? "", {
+    // Strip any REST path prefix (e.g. /api/v1) — Socket.io connects to the
+    // server origin, not the REST base URL. Auth uses a callback so the token
+    // is read at connect time (after login), not at module-load time.
+    const rawUrl = process.env.NEXT_PUBLIC_SOCKET_URL ?? "";
+    const origin = rawUrl ? new URL(rawUrl).origin : "";
+    socket = io(origin, {
       autoConnect: false,
       withCredentials: true,
+      auth: (cb) => cb({ token: getAuthToken() }),
     });
   }
   return socket;

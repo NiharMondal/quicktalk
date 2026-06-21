@@ -1,5 +1,4 @@
-// Shared domain types — mirror the backend data models exactly.
-// No extra fields, no renamed properties. Backend owns these contracts.
+export type TRoomType = "direct" | "group"
 
 export interface User {
   _id: string;
@@ -10,11 +9,10 @@ export interface User {
   lastSeen: string;
   createdAt: string;
 }
-
 export interface Room {
   _id: string;
   name: string;
-  type: "direct" | "group";
+  type: TRoomType;
   members: User[];
   createdBy: string;
   createdAt: string;
@@ -34,7 +32,7 @@ export interface Notification {
   type: string;
   roomId: string;
   messageId: string;
-  sender: User;
+  sender: string; // sender's userId — backend sends only the ID, not a populated User
   preview: string;
   createdAt: string;
 }

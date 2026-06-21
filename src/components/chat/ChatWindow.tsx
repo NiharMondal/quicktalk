@@ -11,7 +11,9 @@ import TypingIndicator from "@/components/chat/TypingIndicator";
 import Avatar from "@/components/shared/Avatar";
 import Loader from "@/components/shared/Loader";
 import { Button } from "@/components/ui/button";
-import { Loader2Icon } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { CopyIcon, Loader2Icon } from "lucide-react";
+import { toast } from "sonner";
 
 interface ChatWindowProps {
   roomId: string;
@@ -102,11 +104,33 @@ export default function ChatWindow({ roomId }: ChatWindowProps): React.ReactElem
   const other = room?.type === "direct" ? room.members.find((m) => m._id !== user?._id) : undefined;
   const title = other?.username ?? room?.name ?? "Conversation";
 
+  const roomType = room?.type;
+
   return (
     <div className="flex h-full min-h-0 flex-1 flex-col">
       <header className="flex items-center gap-3 border-b p-3">
         <Avatar name={title} src={other?.avatarUrl} size="md" />
         <h1 className="truncate text-sm font-semibold">{title}</h1>
+        {room?.type === "group" && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="ml-auto shrink-0"
+                aria-label="Copy invite link"
+                onClick={() => {
+                  void navigator.clipboard.writeText(roomId).then(() => {
+                    toast.success("Invite link copied!");
+                  });
+                }}
+              >
+                <CopyIcon className="size-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Copy invite link</TooltipContent>
+          </Tooltip>
+        )}
       </header>
 
       <div ref={scrollRef} onScroll={handleScroll} className="min-h-0 flex-1 overflow-y-auto">
@@ -131,7 +155,7 @@ export default function ChatWindow({ roomId }: ChatWindowProps): React.ReactElem
               </div>
             ) : null}
             {messages.map((message) => (
-              <MessageBubble key={message._id} message={message} isOwn={message.sender._id === user?._id} />
+              <MessageBubble key={message._id} message={message} isOwn={message.sender._id === user?._id} roomType={roomType} />
             ))}
           </div>
         )}

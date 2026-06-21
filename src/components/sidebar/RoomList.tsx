@@ -83,7 +83,7 @@ export default function RoomList(): React.ReactElement {
               <Avatar name={display.name} src={display.avatarUrl} size="md" isOnline={display.isOnline} />
               <span className="flex-1 truncate text-sm font-medium">{display.name}</span>
               {unread > 0 ? (
-                <Badge variant="default" className="shrink-0">
+                <Badge variant="default" className="shrink-0 bg-accent text-accent-foreground size-4 rounded-full">
                   {unread > 99 ? "99+" : unread}
                 </Badge>
               ) : null}

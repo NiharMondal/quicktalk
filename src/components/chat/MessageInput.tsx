@@ -15,7 +15,7 @@ interface MessageInputProps {
 
 /** Idle time after the last keystroke before we emit typing_stop. */
 const TYPING_DEBOUNCE_MS = 2000;
-const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // 5 mb
 
 function getUploadErrorMessage(err: unknown): string {
   if (isAxiosError(err)) {
